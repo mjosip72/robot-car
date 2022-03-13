@@ -10,4 +10,6 @@ const PATH = path.join(__dirname, "public");
 
 app.use(express.static(PATH));
 
+console.log(PORT);
+
 server.listen(PORT);
