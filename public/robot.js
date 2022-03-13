@@ -1,68 +1,74 @@
 
-// #region connection
+const ID = "robot";
 
-let connectBtn = document.getElementById("connectBtn");
+let streamBtn = document.getElementById("streamBtn");
 
-let socket;
-let peer;
-let connected = false;
+let clientVideo = document.getElementById("clientVideo");
+let robotVideo = document.getElementById("robotVideo");
 
-connectBtn.addEventListener("click", e => {
+let clientStream;
+let robotStream;
 
-  if(connected) {
+streamBtn.addEventListener("click", e => {
 
-    socket.close();
-    connected = false;
-    connectBtn.innerHTML = "Connect";
+  const constraints = {
+    audio: true,
+    video: { facingMode: { exact: "environment" } }
+  };
 
-  }else{
+  if(host == "/") constraints.video = true;
 
-    socket = io(host);
+  log("Requesting media");
 
-    if(!socket) {
-      log("Connection error");
-      return;
-    }
+  navigator.mediaDevices.getUserMedia(constraints)
+  .then(stream => {
 
-    socket.on("connect", () => {
-      log("Socket connected");
-      log("Requesting connection");
-      socket.emit("request-connection", "robot");
-    });
-  
-    socket.on("connection-approved", () => {
+    log("Success");
+    robotStream = stream;
+    robotVideo.srcObject = stream;
 
-      log("Connection approved");
-      log("Connecting to peer network");
-
-      peer = new Peer("robot", {
-        host: peerHost,
-        port: 443,
-        path: "/peerjs",
-        secure: peerSecure
-      });
-
-      peer.on("open", id => {
-        log("Connected to peer network");
-        connected = true;
-        connectBtn.innerHTML = "Connected";
-      });
-
-    });
-  
-    socket.on("connection-rejected", reason => {
-      log("Connection rejected");
-      log("Reason: " + reason);
-    });
-  
-    socket.on("disconnect", () => {
-      log("Socket disconnected");
-      connected = false;
-      connectBtn.innerHTML = "Connect";
-    });
-
-  }
+  })
+  .catch(error => {
+    log("Error");
+  });
 
 });
 
-// #endregion
+function sendStream() {
+
+  log("Sending stream to client");
+
+  let call = peer.call("client", robotStream);
+  /*call.on("stream", stream => {
+    log("Got client stream");
+    clientStream = stream;
+    clientStream.srcObject = stream;
+  });*/
+
+}
+
+function onConnected() {
+
+  peer.on("call", call => {
+    call.answer(null);
+    call.on("stream", stream => {
+      log("Got client stream");
+      clientStream = stream;
+      clientVideo.srcObject = stream;
+    });
+    sendStream();
+  });
+
+  /*peer.on("call", call => {
+
+    call.answer(robotStream);
+  
+    call.on("stream", stream => {
+      log("Got client stream");
+      clientStream = stream;
+      clientVideo.srcObject = stream;
+    });
+  
+  });*/
+
+}

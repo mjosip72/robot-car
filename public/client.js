@@ -1,37 +1,64 @@
 
+const ID = "client";
 
-let connectBtn = document.getElementById("connectBtn");
+let streamBtn = document.getElementById("streamBtn");
 
-let socket;
+let clientVideo = document.getElementById("clientVideo");
+let robotVideo = document.getElementById("robotVideo");
 
-connectBtn.addEventListener("click", e => {
+let clientStream;
+let robotStream;
 
-  if(socket) socket.close();
+streamBtn.addEventListener("click", e => {
 
-  socket = io(host);
+  const constraints = {
+    audio: true,
+    video: false
+  };
 
-  if(!socket) {
-    log("Connection error");
-    return;
-  }
+  log("Requesting media");
 
-  socket.on("connect", () => {
-    log("Socket connected");
-    log("Requesting connection");
-    socket.emit("request-connection", "robot");
-  });
+  navigator.mediaDevices.getUserMedia(constraints)
+  .then(stream => {
 
-  socket.on("connection-approved", () => {
-    log("Connection approved");
-  });
+    log("Success");
+    clientStream = stream;
+    clientVideo.srcObject = stream;
 
-  socket.on("connection-rejected", reason => {
-    log("Connection rejected");
-    log("Reason: " + reason);
-  });
+    //socket.emit("request-stream");
+    sendStream();
 
-  socket.on("disconnect", () => {
-    log("Socket disconnected");
+  })
+  .catch(error => {
+    log("Error");
   });
 
 });
+
+
+
+function sendStream() {
+
+  log("Sending stream to robot");
+
+  let call = peer.call("robot", clientStream);
+  /*call.on("stream", stream => {
+    log("Got robot stream");
+    robotStream = stream;
+    robotVideo.srcObject = stream;
+  });*/
+
+}
+
+function onConnected() {
+
+  peer.on("call", call => {
+    call.answer(null);
+    call.on("stream", stream => {
+      log("Got robot stream");
+      robotStream = stream;
+      robotVideo.srcObject = stream;
+    });
+  });
+
+}
