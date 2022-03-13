@@ -1,6 +1,6 @@
 
 
-let host = "forest72-robot-car-herokuapp.com";
+let host = "forest72-robot-car.herokuapp.com";
 let peerHost = host;
 let peerSecure = true;
 
