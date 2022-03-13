@@ -5,17 +5,17 @@ const server = require("http").Server(app);
 const io = require("socket.io")(server);
 const path = require("path");
 
-const { PeerServer } = require("peer");
-const peerServer = PeerServer({
-  port: 443,
-  path: "/peerjs",
-  secure: true,
+const { ExpressPeerServer } = require("peer");
+
+const peerServer = ExpressPeerServer(server, {
+  secure: true
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 443;
 const PATH = path.join(__dirname, "public");
 
 app.use(express.static(PATH));
+app.use("/peerjs", peerServer);
 
 app.get("/robot", (req, res) => {
   res.redirect("/robot.html");
@@ -113,5 +113,5 @@ io.on("connection", socket => {
 
 // #endregion
 
+log("Listen on port " + PORT);
 server.listen(PORT);
-console.log(process.env);
