@@ -19,11 +19,13 @@
 
 </head>
 <body>
-  
+
   <div>
 
-    <video id="robotVideo" autoplay controls></video>
-    <video id="clientVideo" autoplay controls></video>
+    <canvas id="canvas" width="1280" height="720"></canvas>
+
+    <video id="robotVideo" autoplay hidden></video>
+    <video id="clientVideo" autoplay muted hidden></video>
 
     <button id="connectBtn">Connect</button>
     <button id="streamBtn">Start stream</button>

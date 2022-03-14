@@ -9,6 +9,8 @@ let robotVideo = document.getElementById("robotVideo");
 let clientStream;
 let robotStream;
 
+let dataConnection;
+
 streamBtn.addEventListener("click", e => {
 
   const constraints = {
@@ -37,13 +39,7 @@ streamBtn.addEventListener("click", e => {
 function sendStream() {
 
   log("Sending stream to client");
-
   let call = peer.call("client", robotStream);
-  /*call.on("stream", stream => {
-    log("Got client stream");
-    clientStream = stream;
-    clientStream.srcObject = stream;
-  });*/
 
 }
 
@@ -59,16 +55,10 @@ function onConnected() {
     sendStream();
   });
 
-  /*peer.on("call", call => {
-
-    call.answer(robotStream);
-  
-    call.on("stream", stream => {
-      log("Got client stream");
-      clientStream = stream;
-      clientVideo.srcObject = stream;
+  peer.on("connection", conn => {
+    conn.on("data", data => {
+      BLE.send(data);
     });
-  
-  });*/
+  });
 
 }
