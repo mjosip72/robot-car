@@ -5,6 +5,7 @@ let BLE = {
   device: undefined,
   characteristic: undefined,
 
+  NAME: "Robot Car",
   SERVICE_UUID: "a2bf82f9-36a0-458b-b41b-bdf3c2924de9",
   CHARACTERISTIC_UUID: "4a644eb4-2c92-429b-b022-d827fa83db5f",
   
@@ -13,7 +14,10 @@ let BLE = {
     Toast.show("BLE connect");
 
     navigator.bluetooth.requestDevice({
-      acceptAllDevices: true
+      filters: [
+        { name: BLE.NAME },
+        { services: [BLE.SERVICE_UUID] }
+      ]
     })
     .then(device => {
       BLE.device = device;
@@ -33,6 +37,9 @@ let BLE = {
       BLE.characteristic = characteristic;
       BLE.connected = true;
       Toast.show("BLE connect success");
+    })
+    .catch(r => {
+      Toast.show(r);
     });
 
   },
