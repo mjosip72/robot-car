@@ -10,6 +10,8 @@ let BLE = {
   
   connect: function() {
 
+    Toast.show("BLE connect");
+
     navigator.bluetooth.requestDevice({
       acceptAllDevices: true
     })
@@ -26,6 +28,7 @@ let BLE = {
     .then(characteristic => {
       BLE.characteristic = characteristic;
       BLE.connected = true;
+      Toast.show("BLE connect success");
     });
 
   },
