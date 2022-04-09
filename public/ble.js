@@ -10,7 +10,9 @@ let BLE = {
   
   connect: function() {
 
-    navigator.bluetooth.requestDevice()
+    navigator.bluetooth.requestDevice({
+      acceptAllDevices: true
+    })
     .then(device => {
       BLE.device = device
       return device.gatt.connect();
