@@ -16,16 +16,20 @@ let BLE = {
       acceptAllDevices: true
     })
     .then(device => {
-      BLE.device = device
+      BLE.device = device;
+      Toast.show("request device");
       return device.gatt.connect();
     })
     .then(server => {
+      Toast.show("gat connect");
       return server.getPrimaryService(BLE.SERVICE_UUID);
     })
     .then(service => {
+      Toast.show("primary service");
       return service.getCharacteristic(BLE.CHARACTERISTIC_UUID);
     })
     .then(characteristic => {
+      Toast.show("characteristic");
       BLE.characteristic = characteristic;
       BLE.connected = true;
       Toast.show("BLE connect success");
