@@ -62,3 +62,9 @@ function onConnected() {
   });
 
 }
+
+let bleBtn = document.getElementById("bleBtn");
+bleBtn.addEventListener("click", e => {
+  if(BLE.connected) BLE.disconnect();
+  else BLE.connect();
+});

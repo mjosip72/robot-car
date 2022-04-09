@@ -26,8 +26,20 @@
     <video id="robotVideo" autoplay muted></video>
     <video id="clientVideo" autoplay hidden></video>
 
-    <button id="connectBtn">Connect</button>
-    <button id="streamBtn">Start stream</button>
+    <div>
+      <button id="connectBtn">Connect</button>
+      <button id="streamBtn">Start stream</button>
+      <button id="bleBtn">BLE</button>
+    </div>
+
+    <div>
+      <button onclick="BLE.send(20);">Forward</button>
+      <button onclick="BLE.send(21);">backward</button>
+      <button onclick="BLE.send(22);">Left</button>
+      <button onclick="BLE.send(23);">Right</button>
+      <button onclick="BLE.send(32);">Stop</button>
+    </div>
+
 
   </div>
 
